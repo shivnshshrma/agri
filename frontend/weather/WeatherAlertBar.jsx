@@ -93,16 +93,38 @@ export default function WeatherAlertBar() {
 
     const initializeWeather = async () => {
       setLoading(true);
+      const ipPromise = fetchWeatherByIP()
+        .then((ipSnapshot) => ({ ipSnapshot, ipError: null }))
+        .catch((ipError) => ({ ipSnapshot: null, ipError }));
+
       try {
+        let geolocationDenied = false;
+
+        if (typeof navigator !== "undefined" && navigator.permissions?.query) {
+          try {
+            const permissionStatus = await navigator.permissions.query({
+              name: "geolocation",
+            });
+            geolocationDenied = permissionStatus.state === "denied";
+          } catch {
+            // Ignore unsupported permission-query environments.
+          }
+        }
+
+        if (geolocationDenied) {
+          throw new Error("Geolocation permission denied.");
+        }
+
         const preciseLocation = await getCurrentPosition();
         await updateFromLocation(preciseLocation, "Unable to refresh weather alerts.");
       } catch {
-        try {
-          const ipSnapshot = await fetchWeatherByIP();
+        const { ipSnapshot, ipError } = await ipPromise;
+
+        if (ipSnapshot) {
           if (!cancelled) {
             applySnapshot(ipSnapshot);
           }
-        } catch (ipError) {
+        } else {
           if (!cancelled) {
             setError(ipError.message || "Unable to load weather alerts.");
           }

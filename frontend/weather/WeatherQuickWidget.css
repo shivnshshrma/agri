@@ -3,6 +3,7 @@
   --widget-bg: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%);
   --widget-border: rgba(22, 101, 52, 0.22);
   --widget-text: #0f3b24;
+
   position: fixed;
   right: 22px;
   top: 122px;

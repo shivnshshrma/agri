@@ -130,7 +130,7 @@ export default function WeatherCard({
   return (
     <div className={`weather-card ${embedded ? "weather-card--embedded" : ""}`}>
       {!embedded && onClose && (
-        <button className="close-btn" onClick={onClose} aria-label="Close weather panel">
+        <button className="weather-card__close-btn" onClick={onClose} aria-label="Close weather panel">
           x
         </button>
       )}

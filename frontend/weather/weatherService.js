@@ -137,7 +137,23 @@ export function getAvailableCrops() {
 export function getStoredWeatherSnapshot() {
   try {
     const raw = localStorage.getItem(CACHE_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) {
+      return null;
+    }
+
+    const snapshot = JSON.parse(raw);
+    const isObject =
+      typeof snapshot === "object" && snapshot !== null && !Array.isArray(snapshot);
+    const hasValidAlerts = Array.isArray(snapshot?.alerts);
+    const hasValidCurrent =
+      typeof snapshot?.current === "object" && snapshot.current !== null;
+    const hasValidUnits = typeof snapshot?.units === "object" && snapshot.units !== null;
+
+    if (!isObject || !hasValidAlerts || !hasValidCurrent || !hasValidUnits) {
+      return null;
+    }
+
+    return snapshot;
   } catch {
     return null;
   }

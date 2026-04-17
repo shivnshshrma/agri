@@ -34,15 +34,21 @@ const getInitialPreferredLanguage = () => {
   }
 };
 
+const applyLanguageToGoogleTranslate = (language) => {
+  const gtCombo = document.querySelector(".goog-te-combo");
+  if (!gtCombo) {
+    return false;
+  }
+
+  gtCombo.value = language;
+  gtCombo.dispatchEvent(new Event("change"));
+  return true;
+};
+
 const syncPreferredLanguage = (language, setPreferredLang) => {
   setPreferredLang(language);
   localStorage.setItem("preferredLanguage", language);
-
-  const gtCombo = document.querySelector(".goog-te-combo");
-  if (gtCombo) {
-    gtCombo.value = language;
-    gtCombo.dispatchEvent(new Event("change"));
-  }
+  applyLanguageToGoogleTranslate(language);
 };
 
 
@@ -101,6 +107,26 @@ function App() {
       // ignore
     }
   }, [theme]);
+
+  useEffect(() => {
+    if (applyLanguageToGoogleTranslate(preferredLang)) {
+      return;
+    }
+
+    let attempts = 0;
+    const maxAttempts = 20;
+    const retryId = window.setInterval(() => {
+      attempts += 1;
+      const applied = applyLanguageToGoogleTranslate(preferredLang);
+      if (applied || attempts >= maxAttempts) {
+        window.clearInterval(retryId);
+      }
+    }, 300);
+
+    return () => {
+      window.clearInterval(retryId);
+    };
+  }, [preferredLang]);
 
   return (
     <Router>
