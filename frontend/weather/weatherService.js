@@ -97,7 +97,7 @@ function normaliseSource(source, fallback = "manual") {
 
 function toCoordinate(value) {
   const parsed = typeof value === "number" ? value : parseFloat(value);
-  return Number.isFinite(parsed) ? parsed : 0;
+  return Number.isFinite(parsed) ? parsed : null;
 }
 
 function normaliseLocation(result) {
@@ -338,6 +338,11 @@ export async function fetchWeatherByLocation(location) {
     ...location,
     source: normaliseSource(location?.source, "manual"),
   });
+
+  if (!Number.isFinite(normalisedLocation.latitude) || !Number.isFinite(normalisedLocation.longitude)) {
+    throw new Error("A valid location is required to fetch weather data.");
+  }
+
   const response = await fetch(
     `https://api.open-meteo.com/v1/forecast?latitude=${normalisedLocation.latitude}&longitude=${normalisedLocation.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code,precipitation,rain,showers,is_day&hourly=temperature_2m,precipitation_probability,precipitation,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&timezone=auto&forecast_days=3`
   );
@@ -361,6 +366,7 @@ export async function fetchWeatherByLocation(location) {
   };
 
   storeWeatherSnapshot(snapshot);
+  notifyWeatherSnapshotUpdated(snapshot);
   return snapshot;
 }
 

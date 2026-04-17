@@ -1,4 +1,5 @@
 .weather-quick-widget {
+
   --widget-bg: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%);
   --widget-border: rgba(22, 101, 52, 0.22);
   --widget-text: #0f3b24;
@@ -13,10 +14,10 @@
   border-radius: 16px;
   padding: 12px;
   box-shadow: 0 12px 28px rgba(16, 62, 33, 0.16);
-  animation: widgetSlideIn 0.35s ease-out;
+  animation: widget-slide-in 0.35s ease-out;
 }
 
-@keyframes widgetSlideIn {
+@keyframes widget-slide-in {
   from {
     opacity: 0;
     transform: translateY(-8px) translateX(6px);

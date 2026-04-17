@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   FaBell,
   FaCrosshairs,
@@ -34,18 +34,16 @@ export default function WeatherCard({
   const [query, setQuery] = useState("");
   const [crop, setCrop] = useState("paddy");
   const [snapshot, setSnapshot] = useState(() => getStoredWeatherSnapshot());
-  const [cropWarnings, setCropWarnings] = useState(() =>
-    getCropWarnings(getStoredWeatherSnapshot()?.alerts || [], "paddy")
-  );
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState(
     typeof Notification === "undefined" ? "unsupported" : Notification.permission
   );
 
-  useEffect(() => {
-    setCropWarnings(getCropWarnings(snapshot?.alerts || [], crop));
-  }, [snapshot, crop]);
+  const cropWarnings = useMemo(
+    () => getCropWarnings(snapshot?.alerts || [], crop),
+    [snapshot, crop]
+  );
 
   useEffect(() => {
     if (!embedded || snapshot) {

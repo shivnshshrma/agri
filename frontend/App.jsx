@@ -8,11 +8,46 @@ import "./App.css";
 import { FaLeaf, FaHome, FaComments, FaInfoCircle, FaTimes, FaBars } from "react-icons/fa";
 
 
+const LANGUAGE_OPTIONS = [
+  { value: "en", label: "🌍 English" },
+  { value: "hi", label: "🇮🇳 हिंदी" },
+  { value: "mr", label: "🇮🇳 मराठी" },
+  { value: "bn", label: "🇮🇳 বাংলা" },
+  { value: "ta", label: "🇮🇳 தமிழ்" },
+  { value: "te", label: "🇮🇳 తెలుగు" },
+  { value: "gu", label: "🇮🇳 ગુજરાતી" },
+  { value: "pa", label: "🇮🇳 ਪੰਜਾਬੀ" },
+  { value: "kn", label: "🇮🇳 ಕನ್ನಡ" },
+  { value: "ml", label: "🇮🇳 മലയാളം" },
+  { value: "or", label: "🇮🇳 ଓଡ଼ିଆ" },
+  { value: "as", label: "🇮🇳 অসমীয়া" },
+];
+
+const getInitialPreferredLanguage = () => {
+  try {
+    const storedLanguage = localStorage.getItem("preferredLanguage");
+    return LANGUAGE_OPTIONS.some((option) => option.value === storedLanguage)
+      ? storedLanguage
+      : "en";
+  } catch {
+    return "en";
+  }
+};
+
+const syncPreferredLanguage = (language, setPreferredLang) => {
+  setPreferredLang(language);
+  localStorage.setItem("preferredLanguage", language);
+
+  const gtCombo = document.querySelector(".goog-te-combo");
+  if (gtCombo) {
+    gtCombo.value = language;
+    gtCombo.dispatchEvent(new Event("change"));
+  }
+};
+
 
 function App() {
-  const [preferredLang, setPreferredLang] = useState(
-    localStorage.getItem("preferredLanguage") || "en"
-  );
+  const [preferredLang, setPreferredLang] = useState(getInitialPreferredLanguage);
   const [isOpen, setIsOpen] = useState(false);
   const [sunlight, setSunlight] = useState(false);
 
@@ -122,35 +157,18 @@ function App() {
 
             {/* Language Dropdown */}
             {/* LANGUAGE SELECT */}
-            <div id="google_translate_element" style={{ opacity: 0, position: "absolute", zIndex: -1 }}></div>
             <select
               className="lang-select"
               value={preferredLang}
               onChange={(e) => {
-                const lang = e.target.value;
-                setPreferredLang(lang);
-                localStorage.setItem("preferredLanguage", lang);
-
-                // Update Google Translate automatically
-                const gtCombo = document.querySelector(".goog-te-combo");
-                if (gtCombo) {
-                  gtCombo.value = lang;
-                  gtCombo.dispatchEvent(new Event("change"));
-                }
+                syncPreferredLanguage(e.target.value, setPreferredLang);
               }}
             >
-              <option value="en">🌍 English</option>
-              <option value="hi">🇮🇳 हिंदी</option>
-              <option value="mr">🇮🇳 मराठी</option>
-              <option value="bn">🇮🇳 বাংলা</option>
-              <option value="ta">🇮🇳 தமிழ்</option>
-              <option value="te">🇮🇳 తెలుగు</option>
-              <option value="gu">🇮🇳 ગુજરાતી</option>
-              <option value="pa">🇮🇳 ਪੰਜਾਬੀ</option>
-              <option value="kn">🇮🇳 ಕನ್ನಡ</option>
-              <option value="ml">🇮🇳 മലയാളം</option>
-              <option value="or">🇮🇳 ଓଡ଼ିଆ</option>
-              <option value="as">🇮🇳 অসমীয়া</option>
+              {LANGUAGE_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
 
             {/* USER */}
@@ -199,22 +217,15 @@ function App() {
                     <select
                       value={preferredLang}
                       onChange={(e) => {
-                        const lang = e.target.value;
-                        setPreferredLang(lang);
-                        localStorage.setItem("preferredLanguage", lang);
-
-                        // Update Google Translate automatically
-                        const gtCombo = document.querySelector(".goog-te-combo");
-                        if (gtCombo) {
-                          gtCombo.value = lang;
-                          gtCombo.dispatchEvent(new Event("change"));
-                        }
+                        syncPreferredLanguage(e.target.value, setPreferredLang);
                       }}
                       style={{ marginBottom: "18px" }}
                     >
-                      <option value="en">English</option>
-                      <option value="hi">Hindi</option>
-                      <option value="mr">Marathi</option>
+                      {LANGUAGE_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
                     </select>
 
                     <button type="submit">Login</button>

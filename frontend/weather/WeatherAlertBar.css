@@ -4,6 +4,7 @@
   --weather-alert-text: #0f3b24;
   --weather-alert-icon-bg: rgba(22, 101, 52, 0.14);
   --weather-alert-primary: #0e9f6e;
+
   position: relative;
   z-index: 20;
   color: var(--weather-alert-text);
