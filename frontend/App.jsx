@@ -2,23 +2,13 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 import Advisor from "./Advisor";
-import How from "./How";
 import Home from "./Home";
-import { FaHome, FaComments, FaInfoCircle, FaLeaf, FaBars, FaTimes } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
-
-// 🔹 ScrollToTop component to fix navigation positioning
-function ScrollToTop() {
-  const { pathname } = useLocation();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-  return null;
-}
+import How from "./How";
+import "./App.css";
+import { FaLeaf, FaHome, FaComments, FaInfoCircle, FaTimes, FaBars } from "react-icons/fa";
 
 function App() {
   const [loginLang, setLoginLang] = useState("");
-  const [showAlert, setShowAlert] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [sunlight, setSunlight] = useState(false);
 
@@ -87,7 +77,6 @@ function App() {
 
   return (
     <Router>
-      <ScrollToTop />
       <div className={sunlight ? "app sunlight" : "app"}>
 
         {/* Navbar */}
@@ -185,16 +174,6 @@ function App() {
             {isOpen ? <FaTimes /> : <FaBars />}
           </button>
         </nav>
-
-        {/* ALERT */}
-        {showAlert && (
-          <div className="alert-bar">
-            🌧️ Weather Alert: Heavy rainfall expected in parts of Maharashtra this evening.
-            <button className="close-btn" onClick={() => setShowAlert(false)}>
-              <FaTimes />
-            </button>
-          </div>
-        )}
 
         {/* ROUTES */}
         <Routes>
