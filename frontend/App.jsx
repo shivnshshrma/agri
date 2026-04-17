@@ -7,8 +7,12 @@ import How from "./How";
 import "./App.css";
 import { FaLeaf, FaHome, FaComments, FaInfoCircle, FaTimes, FaBars } from "react-icons/fa";
 
+
+
 function App() {
-  const [loginLang, setLoginLang] = useState("");
+  const [preferredLang, setPreferredLang] = useState(
+    localStorage.getItem("preferredLanguage") || "en"
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [sunlight, setSunlight] = useState(false);
 
@@ -29,9 +33,6 @@ function App() {
 
   const [name, setName] = useState(localStorage.getItem("farmerName") || "");
   const [inputName, setInputName] = useState("");
-  const [preferredLang, setPreferredLang] = useState(
-    localStorage.getItem("preferredLanguage") || ""
-  );
 
 
   const handleLogin = (e) => {
@@ -42,16 +43,9 @@ function App() {
       return;
     }
 
-    if (!loginLang) {
-      alert("Please select a language");
-      return;
-    }
-
     localStorage.setItem("farmerName", inputName);
-    localStorage.setItem("preferredLanguage", loginLang);
 
     setName(inputName);
-    setPreferredLang(loginLang);
 
     setInputName("");
     window.location.href = "/";
@@ -59,9 +53,7 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem("farmerName");
-    localStorage.removeItem("preferredLanguage");
     setName("");
-    setPreferredLang("en");
     window.location.href = "/";
   };
 
@@ -130,6 +122,7 @@ function App() {
 
             {/* Language Dropdown */}
             {/* LANGUAGE SELECT */}
+            <div id="google_translate_element" style={{ opacity: 0, position: "absolute", zIndex: -1 }}></div>
             <select
               className="lang-select"
               value={preferredLang}
@@ -137,9 +130,15 @@ function App() {
                 const lang = e.target.value;
                 setPreferredLang(lang);
                 localStorage.setItem("preferredLanguage", lang);
+
+                // Update Google Translate automatically
+                const gtCombo = document.querySelector(".goog-te-combo");
+                if (gtCombo) {
+                  gtCombo.value = lang;
+                  gtCombo.dispatchEvent(new Event("change"));
+                }
               }}
             >
-              <option value="">Select Language</option>
               <option value="en">🌍 English</option>
               <option value="hi">🇮🇳 हिंदी</option>
               <option value="mr">🇮🇳 मराठी</option>
@@ -151,6 +150,7 @@ function App() {
               <option value="kn">🇮🇳 ಕನ್ನಡ</option>
               <option value="ml">🇮🇳 മലയാളം</option>
               <option value="or">🇮🇳 ଓଡ଼ିଆ</option>
+              <option value="as">🇮🇳 অসমীয়া</option>
             </select>
 
             {/* USER */}
@@ -197,10 +197,21 @@ function App() {
                     />
 
                     <select
-                      value={loginLang}
-                      onChange={(e) => setLoginLang(e.target.value)}
+                      value={preferredLang}
+                      onChange={(e) => {
+                        const lang = e.target.value;
+                        setPreferredLang(lang);
+                        localStorage.setItem("preferredLanguage", lang);
+
+                        // Update Google Translate automatically
+                        const gtCombo = document.querySelector(".goog-te-combo");
+                        if (gtCombo) {
+                          gtCombo.value = lang;
+                          gtCombo.dispatchEvent(new Event("change"));
+                        }
+                      }}
+                      style={{ marginBottom: "18px" }}
                     >
-                      <option value="">Select Language</option>
                       <option value="en">English</option>
                       <option value="hi">Hindi</option>
                       <option value="mr">Marathi</option>

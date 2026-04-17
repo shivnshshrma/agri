@@ -527,3 +527,33 @@ body,
   border: 3px solid #000 !important;
   border-radius: 4px !important;
 }
+
+/* Google Translate overrides */
+iframe.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+.goog-te-banner-frame {
+  display: none !important;
+}
+body {
+  top: 0px !important;
+  position: static !important;
+}
+html {
+  position: static !important;
+  top: auto !important;
+  margin-top: 0 !important;
+}
+
+/* Hide original text hover popup */
+.goog-tooltip {
+  display: none !important;
+}
+.goog-tooltip:hover {
+  display: none !important;
+}
+.goog-text-highlight {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
